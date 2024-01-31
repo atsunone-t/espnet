@@ -38,7 +38,7 @@ requirements = {
         "pypinyin<=0.44.0",
         "espnet_tts_frontend",
         # ENH
-        "ci_sdr",
+        # "ci_sdr",
         "fast-bss-eval==0.1.3",
         # SPK
         "asteroid_filterbanks==0.4.0",
@@ -122,9 +122,7 @@ requirements["test"].extend(requirements["train"])
 install_requires = requirements["install"]
 setup_requires = requirements["setup"]
 tests_require = requirements["test"]
-extras_require = {
-    k: v for k, v in requirements.items() if k not in ["install", "setup"]
-}
+extras_require = {k: v for k, v in requirements.items() if k not in ["install", "setup"]}
 
 dirname = os.path.dirname(__file__)
 version_file = os.path.join(dirname, "espnet", "version.txt")

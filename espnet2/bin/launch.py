@@ -10,6 +10,7 @@ import uuid
 from pathlib import Path
 
 from espnet2.utils.types import str2bool, str_or_none
+
 from espnet.utils.cli_utils import get_commandline_args
 
 
@@ -33,9 +34,7 @@ def get_parser():
         help="The maximum number of log-files to be kept",
         default=1000,
     )
-    parser.add_argument(
-        "--ngpu", type=int, default=1, help="The number of GPUs per node"
-    )
+    parser.add_argument("--ngpu", type=int, default=1, help="The number of GPUs per node")
     egroup = parser.add_mutually_exclusive_group()
     egroup.add_argument("--num_nodes", type=int, default=1, help="The number of nodes")
     egroup.add_argument(
@@ -52,8 +51,7 @@ def get_parser():
         "--envfile",
         type=str_or_none,
         default="path.sh",
-        help="Source the shell script before executing command. "
-        "This option is used when --host is specified.",
+        help="Source the shell script before executing command. " "This option is used when --host is specified.",
     )
 
     parser.add_argument(
@@ -66,15 +64,13 @@ def get_parser():
         "--master_port",
         type=int,
         default=None,
-        help="Specify the port number of master"
-        "Master is a host machine has RANK0 process.",
+        help="Specify the port number of master" "Master is a host machine has RANK0 process.",
     )
     parser.add_argument(
         "--master_addr",
         type=str,
         default=None,
-        help="Specify the address s of master. "
-        "Master is a host machine has RANK0 process.",
+        help="Specify the address s of master. " "Master is a host machine has RANK0 process.",
     )
     parser.add_argument(
         "--init_file_prefix",
@@ -98,10 +94,7 @@ def main(cmd=None):
     args.cmd = shlex.split(args.cmd)
 
     if args.host is None and shutil.which(args.cmd[0]) is None:
-        raise RuntimeError(
-            f"The first args of --cmd should be a script path. e.g. utils/run.pl: "
-            f"{args.cmd[0]}"
-        )
+        raise RuntimeError(f"The first args of --cmd should be a script path. e.g. utils/run.pl: " f"{args.cmd[0]}")
 
     # Specify init_method:
     #   See: https://pytorch.org/docs/stable/distributed.html#initialization

@@ -1,0 +1,236 @@
+2024-01-26T19:01:23 (asr.sh:283:main) ./asr.sh --ngpu 4 --nj 128 --inference_nj 256 --lang jp --token_type char --feats_type raw --asr_config conf/train_asr_conformer.yaml --inference_config conf/decode_asr.yaml --lm_config conf/train_lm.yaml --train_set train_nodev --valid_set dev_4k --test_sets dev_4k dev tedx-jp-10k --speed_perturb_factors 0.9 1.0 1.1 --lm_train_text data/train_nodev/text --ngpu 4
+2024-01-26T19:01:23 (asr.sh:321:main) Info: The valid_set 'dev_4k' is included in the test_sets. '--eval_valid_set true' is set and 'dev_4k' is removed from the test_sets
+2024-01-26T19:01:23 (asr.sh:565:main) Skipped stages:  9 14 15 16 
+2024-01-26T19:01:23 (asr.sh:572:main) Stage 1: Data preparation for data/train_nodev, data/dev_4k, etc.
+2024-01-26T19:01:23 (data.sh:16:main) local/data.sh 
+2024-01-26T19:01:23 (data.sh:42:main) stage 1: TEDxJP-10k found in /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/data/datasets/TEDxJP-10K_v1.1.
+local/tedx-jp-10k_data_prep.sh: Copying segments, spk2utt, text and utt2spk to data/tedx-jp-10k.
+local/tedx-jp-10k_data_prep.sh: Creating wav.scp from wavlist.txt
+fix_data_dir.sh: kept all 10000 utterances.
+fix_data_dir.sh: old files are kept in data/tedx-jp-10k/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/tedx-jp-10k
+local/tedx-jp-10k_data_prep.sh: Done preprocessing TEDxJP-10K dataset (data/tedx-jp-10k)
+removed tags, space, and <sp>
+local/laborotv_data_prep.sh: Making data/train ...
+fix_data_dir.sh: kept all 16019 utterances.
+fix_data_dir.sh: old files are kept in data/train/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train
+local/laborotv_data_prep.sh: Making data/dev ...
+fix_data_dir.sh: kept all 119 utterances.
+fix_data_dir.sh: old files are kept in data/dev/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/dev
+local/laborotv_data_prep.sh: done preparing data directories
+removed tags, space, and <sp>
+removed tags, space, and <sp>
+utils/subset_data_dir.sh: reducing #utt from 16019 to 4000
+utils/subset_data_dir.sh: reducing #utt from 16019 to 12019
+2024-01-26T19:01:30 (data.sh:68:main) Successfully finished. [elapsed=7s]
+2024-01-26T19:01:30 (asr.sh:580:main) Stage 2: Speed perturbation: data/train_nodev -> data/train_nodev_sp
+text
+utt2lang
+text
+scripts/utils/perturb_data_dir_speed.sh: generated speed-perturbed version of data in data/train_nodev, in data/train_nodev_sp0.9
+fix_data_dir.sh: kept all 12019 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp0.9/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train_nodev_sp0.9
+text
+utt2lang
+text
+scripts/utils/perturb_data_dir_speed.sh: generated speed-perturbed version of data in data/train_nodev, in data/train_nodev_sp1.1
+fix_data_dir.sh: kept all 12019 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp1.1/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train_nodev_sp1.1
+utils/combine_data.sh --extra_files text  data/train_nodev_sp data/train_nodev_sp0.9 data/train_nodev data/train_nodev_sp1.1
+utils/combine_data.sh: combined utt2uniq
+utils/combine_data.sh [info]: not combining segments as it does not exist
+utils/combine_data.sh: combined utt2spk
+utils/combine_data.sh [info]: not combining utt2lang as it does not exist
+utils/combine_data.sh [info]: not combining utt2dur as it does not exist
+utils/combine_data.sh [info]: not combining utt2num_frames as it does not exist
+utils/combine_data.sh [info]: not combining reco2dur as it does not exist
+utils/combine_data.sh [info]: not combining feats.scp as it does not exist
+utils/combine_data.sh: combined text
+utils/combine_data.sh [info]: not combining cmvn.scp as it does not exist
+utils/combine_data.sh [info]: not combining vad.scp as it does not exist
+utils/combine_data.sh [info]: not combining reco2file_and_channel as it does not exist
+utils/combine_data.sh: combined wav.scp
+utils/combine_data.sh [info]: not combining spk2gender as it does not exist
+utils/combine_data.sh: combined text
+fix_data_dir.sh: kept all 36057 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp/.backup
+2024-01-26T19:01:34 (asr.sh:615:main) Stage 3: Format wav.scp: data/ -> dump/raw
+utils/copy_data_dir.sh: copied data from data/train_nodev_sp to dump/raw/org/train_nodev_sp
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/org/train_nodev_sp
+2024-01-26T19:01:36 (format_wav_scp.sh:46:main) scripts/audio/format_wav_scp.sh --nj 128 --cmd run.pl --audio-format flac --fs 16k --multi-columns-input false --multi-columns-output false data/train_nodev_sp/wav.scp dump/raw/org/train_nodev_sp
+2024-01-26T19:01:36 (format_wav_scp.sh:118:main) [info]: without segments
+2024-01-26T19:02:05 (format_wav_scp.sh:153:main) Successfully finished. [elapsed=29s]
+utils/copy_data_dir.sh: copied data from data/dev_4k to dump/raw/org/dev_4k
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/org/dev_4k
+2024-01-26T19:02:05 (format_wav_scp.sh:46:main) scripts/audio/format_wav_scp.sh --nj 128 --cmd run.pl --audio-format flac --fs 16k --multi-columns-input false --multi-columns-output false data/dev_4k/wav.scp dump/raw/org/dev_4k
+2024-01-26T19:02:05 (format_wav_scp.sh:118:main) [info]: without segments
+2024-01-26T19:02:10 (format_wav_scp.sh:153:main) Successfully finished. [elapsed=5s]
+utils/copy_data_dir.sh: copied data from data/dev to dump/raw/dev
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/dev
+2024-01-26T19:02:10 (format_wav_scp.sh:46:main) scripts/audio/format_wav_scp.sh --nj 128 --cmd run.pl --audio-format flac --fs 16k --multi-columns-input false --multi-columns-output false data/dev/wav.scp dump/raw/dev
+2024-01-26T19:02:10 (format_wav_scp.sh:118:main) [info]: without segments
+2024-01-26T19:02:13 (format_wav_scp.sh:153:main) Successfully finished. [elapsed=3s]
+utils/copy_data_dir.sh: copied data from data/tedx-jp-10k to dump/raw/tedx-jp-10k
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/tedx-jp-10k
+2024-01-26T19:02:13 (format_wav_scp.sh:46:main) scripts/audio/format_wav_scp.sh --nj 128 --cmd run.pl --audio-format flac --fs 16k --segments data/tedx-jp-10k/segments --multi-columns-input false --multi-columns-output false data/tedx-jp-10k/wav.scp dump/raw/tedx-jp-10k
+2024-01-26T19:02:13 (format_wav_scp.sh:97:main) [info]: using data/tedx-jp-10k/segments
+2024-01-26T19:02:21 (format_wav_scp.sh:153:main) Successfully finished. [elapsed=8s]
+2024-01-26T19:02:21 (asr.sh:800:main) Stage 4: Remove long/short data: dump/raw/org -> dump/raw
+utils/copy_data_dir.sh: copied data from dump/raw/org/train_nodev_sp to dump/raw/train_nodev_sp
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/train_nodev_sp
+fix_data_dir.sh: kept 35720 utterances out of 36057
+Unable to flush stdout: Broken pipe
+Unable to flush stdout: Broken pipe
+Unable to flush stdout: Broken pipe
+fix_data_dir.sh: old files are kept in dump/raw/train_nodev_sp/.backup
+utils/copy_data_dir.sh: copied data from dump/raw/org/dev_4k to dump/raw/dev_4k
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/dev_4k
+fix_data_dir.sh: kept 3965 utterances out of 4000
+Unable to flush stdout: Broken pipe
+Unable to flush stdout: Broken pipe
+fix_data_dir.sh: old files are kept in dump/raw/dev_4k/.backup
+2024-01-26T19:02:25 (asr.sh:921:main) Stage 5: Generate character level token_list from data/train_nodev/text
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py --token_type char --input dump/raw/lm_train.txt --output data/jp_token_list/char/tokens.txt --non_linguistic_symbols none --field 2- --cleaner none --g2p none --write_vocabulary true --add_symbol '<blank>:0' --add_symbol '<unk>:1' --add_symbol '<sos/eos>:-1'
+2024-01-26 19:02:26,627 (tokenize_text:173) INFO: OOV rate = 0.0 %
+2024-01-26T19:02:26 (asr.sh:1008:main) Stage 6: LM collect stats: train_set=dump/raw/lm_train.txt, dev_set=dump/raw/org/dev_4k/text
+2024-01-26T19:02:26 (asr.sh:1040:main) Generate 'exp/lm_stats_jp_char/run.sh'. You can resume the process from stage 6 using this script
+2024-01-26T19:02:26 (asr.sh:1044:main) LM collect-stats started... log: 'exp/lm_stats_jp_char/logdir/stats.*.log'
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/aggregate_stats_dirs.py --input_dir exp/lm_stats_jp_char/logdir/stats.1 --input_dir exp/lm_stats_jp_char/logdir/stats.2 --input_dir exp/lm_stats_jp_char/logdir/stats.3 --input_dir exp/lm_stats_jp_char/logdir/stats.4 --input_dir exp/lm_stats_jp_char/logdir/stats.5 --input_dir exp/lm_stats_jp_char/logdir/stats.6 --input_dir exp/lm_stats_jp_char/logdir/stats.7 --input_dir exp/lm_stats_jp_char/logdir/stats.8 --input_dir exp/lm_stats_jp_char/logdir/stats.9 --input_dir exp/lm_stats_jp_char/logdir/stats.10 --input_dir exp/lm_stats_jp_char/logdir/stats.11 --input_dir exp/lm_stats_jp_char/logdir/stats.12 --input_dir exp/lm_stats_jp_char/logdir/stats.13 --input_dir exp/lm_stats_jp_char/logdir/stats.14 --input_dir exp/lm_stats_jp_char/logdir/stats.15 --input_dir exp/lm_stats_jp_char/logdir/stats.16 --input_dir exp/lm_stats_jp_char/logdir/stats.17 --input_dir exp/lm_stats_jp_char/logdir/stats.18 --input_dir exp/lm_stats_jp_char/logdir/stats.19 --input_dir exp/lm_stats_jp_char/logdir/stats.20 --input_dir exp/lm_stats_jp_char/logdir/stats.21 --input_dir exp/lm_stats_jp_char/logdir/stats.22 --input_dir exp/lm_stats_jp_char/logdir/stats.23 --input_dir exp/lm_stats_jp_char/logdir/stats.24 --input_dir exp/lm_stats_jp_char/logdir/stats.25 --input_dir exp/lm_stats_jp_char/logdir/stats.26 --input_dir exp/lm_stats_jp_char/logdir/stats.27 --input_dir exp/lm_stats_jp_char/logdir/stats.28 --input_dir exp/lm_stats_jp_char/logdir/stats.29 --input_dir exp/lm_stats_jp_char/logdir/stats.30 --input_dir exp/lm_stats_jp_char/logdir/stats.31 --input_dir exp/lm_stats_jp_char/logdir/stats.32 --input_dir exp/lm_stats_jp_char/logdir/stats.33 --input_dir exp/lm_stats_jp_char/logdir/stats.34 --input_dir exp/lm_stats_jp_char/logdir/stats.35 --input_dir exp/lm_stats_jp_char/logdir/stats.36 --input_dir exp/lm_stats_jp_char/logdir/stats.37 --input_dir exp/lm_stats_jp_char/logdir/stats.38 --input_dir exp/lm_stats_jp_char/logdir/stats.39 --input_dir exp/lm_stats_jp_char/logdir/stats.40 --input_dir exp/lm_stats_jp_char/logdir/stats.41 --input_dir exp/lm_stats_jp_char/logdir/stats.42 --input_dir exp/lm_stats_jp_char/logdir/stats.43 --input_dir exp/lm_stats_jp_char/logdir/stats.44 --input_dir exp/lm_stats_jp_char/logdir/stats.45 --input_dir exp/lm_stats_jp_char/logdir/stats.46 --input_dir exp/lm_stats_jp_char/logdir/stats.47 --input_dir exp/lm_stats_jp_char/logdir/stats.48 --input_dir exp/lm_stats_jp_char/logdir/stats.49 --input_dir exp/lm_stats_jp_char/logdir/stats.50 --input_dir exp/lm_stats_jp_char/logdir/stats.51 --input_dir exp/lm_stats_jp_char/logdir/stats.52 --input_dir exp/lm_stats_jp_char/logdir/stats.53 --input_dir exp/lm_stats_jp_char/logdir/stats.54 --input_dir exp/lm_stats_jp_char/logdir/stats.55 --input_dir exp/lm_stats_jp_char/logdir/stats.56 --input_dir exp/lm_stats_jp_char/logdir/stats.57 --input_dir exp/lm_stats_jp_char/logdir/stats.58 --input_dir exp/lm_stats_jp_char/logdir/stats.59 --input_dir exp/lm_stats_jp_char/logdir/stats.60 --input_dir exp/lm_stats_jp_char/logdir/stats.61 --input_dir exp/lm_stats_jp_char/logdir/stats.62 --input_dir exp/lm_stats_jp_char/logdir/stats.63 --input_dir exp/lm_stats_jp_char/logdir/stats.64 --input_dir exp/lm_stats_jp_char/logdir/stats.65 --input_dir exp/lm_stats_jp_char/logdir/stats.66 --input_dir exp/lm_stats_jp_char/logdir/stats.67 --input_dir exp/lm_stats_jp_char/logdir/stats.68 --input_dir exp/lm_stats_jp_char/logdir/stats.69 --input_dir exp/lm_stats_jp_char/logdir/stats.70 --input_dir exp/lm_stats_jp_char/logdir/stats.71 --input_dir exp/lm_stats_jp_char/logdir/stats.72 --input_dir exp/lm_stats_jp_char/logdir/stats.73 --input_dir exp/lm_stats_jp_char/logdir/stats.74 --input_dir exp/lm_stats_jp_char/logdir/stats.75 --input_dir exp/lm_stats_jp_char/logdir/stats.76 --input_dir exp/lm_stats_jp_char/logdir/stats.77 --input_dir exp/lm_stats_jp_char/logdir/stats.78 --input_dir exp/lm_stats_jp_char/logdir/stats.79 --input_dir exp/lm_stats_jp_char/logdir/stats.80 --input_dir exp/lm_stats_jp_char/logdir/stats.81 --input_dir exp/lm_stats_jp_char/logdir/stats.82 --input_dir exp/lm_stats_jp_char/logdir/stats.83 --input_dir exp/lm_stats_jp_char/logdir/stats.84 --input_dir exp/lm_stats_jp_char/logdir/stats.85 --input_dir exp/lm_stats_jp_char/logdir/stats.86 --input_dir exp/lm_stats_jp_char/logdir/stats.87 --input_dir exp/lm_stats_jp_char/logdir/stats.88 --input_dir exp/lm_stats_jp_char/logdir/stats.89 --input_dir exp/lm_stats_jp_char/logdir/stats.90 --input_dir exp/lm_stats_jp_char/logdir/stats.91 --input_dir exp/lm_stats_jp_char/logdir/stats.92 --input_dir exp/lm_stats_jp_char/logdir/stats.93 --input_dir exp/lm_stats_jp_char/logdir/stats.94 --input_dir exp/lm_stats_jp_char/logdir/stats.95 --input_dir exp/lm_stats_jp_char/logdir/stats.96 --input_dir exp/lm_stats_jp_char/logdir/stats.97 --input_dir exp/lm_stats_jp_char/logdir/stats.98 --input_dir exp/lm_stats_jp_char/logdir/stats.99 --input_dir exp/lm_stats_jp_char/logdir/stats.100 --input_dir exp/lm_stats_jp_char/logdir/stats.101 --input_dir exp/lm_stats_jp_char/logdir/stats.102 --input_dir exp/lm_stats_jp_char/logdir/stats.103 --input_dir exp/lm_stats_jp_char/logdir/stats.104 --input_dir exp/lm_stats_jp_char/logdir/stats.105 --input_dir exp/lm_stats_jp_char/logdir/stats.106 --input_dir exp/lm_stats_jp_char/logdir/stats.107 --input_dir exp/lm_stats_jp_char/logdir/stats.108 --input_dir exp/lm_stats_jp_char/logdir/stats.109 --input_dir exp/lm_stats_jp_char/logdir/stats.110 --input_dir exp/lm_stats_jp_char/logdir/stats.111 --input_dir exp/lm_stats_jp_char/logdir/stats.112 --input_dir exp/lm_stats_jp_char/logdir/stats.113 --input_dir exp/lm_stats_jp_char/logdir/stats.114 --input_dir exp/lm_stats_jp_char/logdir/stats.115 --input_dir exp/lm_stats_jp_char/logdir/stats.116 --input_dir exp/lm_stats_jp_char/logdir/stats.117 --input_dir exp/lm_stats_jp_char/logdir/stats.118 --input_dir exp/lm_stats_jp_char/logdir/stats.119 --input_dir exp/lm_stats_jp_char/logdir/stats.120 --input_dir exp/lm_stats_jp_char/logdir/stats.121 --input_dir exp/lm_stats_jp_char/logdir/stats.122 --input_dir exp/lm_stats_jp_char/logdir/stats.123 --input_dir exp/lm_stats_jp_char/logdir/stats.124 --input_dir exp/lm_stats_jp_char/logdir/stats.125 --input_dir exp/lm_stats_jp_char/logdir/stats.126 --input_dir exp/lm_stats_jp_char/logdir/stats.127 --input_dir exp/lm_stats_jp_char/logdir/stats.128 --output_dir exp/lm_stats_jp_char
+2024-01-26T19:02:52 (asr.sh:1085:main) Stage 7: LM Training: train_set=dump/raw/lm_train.txt, dev_set=dump/raw/org/dev_4k/text
+2024-01-26T19:02:52 (asr.sh:1122:main) Generate 'exp/lm_train_lm_jp_char/run.sh'. You can resume the process from stage 7 using this script
+2024-01-26T19:02:52 (asr.sh:1125:main) LM training started... log: 'exp/lm_train_lm_jp_char/train.log'
+2024-01-26 19:02:52,993 (launch:90) INFO: /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/launch.py --cmd 'run.pl --name exp/lm_train_lm_jp_char/train.log' --log exp/lm_train_lm_jp_char/train.log --ngpu 4 --num_nodes 1 --init_file_prefix exp/lm_train_lm_jp_char/.dist_init_ --multiprocessing_distributed true -- python3 -m espnet2.bin.lm_train --ngpu 4 --use_preprocessor true --bpemodel none --token_type char --token_list data/jp_token_list/char/tokens.txt --non_linguistic_symbols none --cleaner none --g2p none --valid_data_path_and_name_and_type dump/raw/org/dev_4k/text,text,text --valid_shape_file exp/lm_stats_jp_char/valid/text_shape.char --fold_length 150 --resume true --output_dir exp/lm_train_lm_jp_char --config conf/train_lm.yaml --train_data_path_and_name_and_type dump/raw/lm_train.txt,text,text --train_shape_file exp/lm_stats_jp_char/train/text_shape.char
+2024-01-26 19:02:53,008 (launch:230) INFO: single-node with 4gpu on distributed mode
+2024-01-26 19:02:53,010 (launch:341) INFO: log file: exp/lm_train_lm_jp_char/train.log
+2024-01-26T19:03:05 (asr.sh:1161:main) Stage 8: Calc perplexity: dump/raw/dev/text
+2024-01-26T19:03:05 (asr.sh:1164:main) Perplexity calculation started... log: 'exp/lm_train_lm_jp_char/perplexity_test/lm_calc_perplexity.log'
+2024-01-26T19:03:16 (asr.sh:1174:main) PPL: dump/raw/dev/text: 96.86087026580931
+2024-01-26T19:03:16 (asr.sh:1190:main) Stage 10: ASR collect stats: train_set=dump/raw/train_nodev_sp, valid_set=dump/raw/dev_4k
+2024-01-26T19:03:16 (asr.sh:1241:main) Generate 'exp/asr_stats_raw_jp_char_sp/run.sh'. You can resume the process from stage 10 using this script
+2024-01-26T19:03:16 (asr.sh:1245:main) ASR collect-stats started... log: 'exp/asr_stats_raw_jp_char_sp/logdir/stats.*.log'
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/aggregate_stats_dirs.py --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.1 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.2 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.3 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.4 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.5 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.6 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.7 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.8 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.9 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.10 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.11 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.12 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.13 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.14 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.15 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.16 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.17 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.18 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.19 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.20 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.21 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.22 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.23 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.24 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.25 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.26 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.27 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.28 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.29 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.30 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.31 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.32 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.33 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.34 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.35 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.36 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.37 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.38 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.39 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.40 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.41 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.42 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.43 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.44 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.45 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.46 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.47 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.48 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.49 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.50 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.51 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.52 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.53 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.54 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.55 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.56 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.57 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.58 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.59 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.60 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.61 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.62 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.63 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.64 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.65 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.66 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.67 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.68 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.69 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.70 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.71 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.72 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.73 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.74 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.75 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.76 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.77 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.78 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.79 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.80 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.81 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.82 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.83 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.84 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.85 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.86 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.87 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.88 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.89 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.90 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.91 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.92 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.93 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.94 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.95 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.96 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.97 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.98 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.99 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.100 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.101 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.102 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.103 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.104 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.105 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.106 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.107 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.108 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.109 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.110 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.111 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.112 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.113 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.114 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.115 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.116 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.117 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.118 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.119 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.120 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.121 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.122 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.123 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.124 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.125 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.126 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.127 --input_dir exp/asr_stats_raw_jp_char_sp/logdir/stats.128 --output_dir exp/asr_stats_raw_jp_char_sp
+2024-01-26T19:04:02 (asr.sh:1309:main) Stage 11: ASR Training: train_set=dump/raw/train_nodev_sp, valid_set=dump/raw/dev_4k
+2024-01-26T19:04:02 (asr.sh:1408:main) Generate 'exp/asr_train_asr_conformer_raw_jp_char_sp/run.sh'. You can resume the process from stage 11 using this script
+2024-01-26T19:04:02 (asr.sh:1412:main) ASR training started... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/train.log'
+2024-01-26 19:04:02,906 (launch:90) INFO: /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/launch.py --cmd 'run.pl --name exp/asr_train_asr_conformer_raw_jp_char_sp/train.log' --log exp/asr_train_asr_conformer_raw_jp_char_sp/train.log --ngpu 4 --num_nodes 1 --init_file_prefix exp/asr_train_asr_conformer_raw_jp_char_sp/.dist_init_ --multiprocessing_distributed true -- python3 -m espnet2.bin.asr_train --use_preprocessor true --bpemodel none --token_type char --token_list data/jp_token_list/char/tokens.txt --non_linguistic_symbols none --cleaner none --g2p none --valid_data_path_and_name_and_type dump/raw/dev_4k/wav.scp,speech,sound --valid_shape_file exp/asr_stats_raw_jp_char_sp/valid/speech_shape --resume true --ignore_init_mismatch false --fold_length 80000 --output_dir exp/asr_train_asr_conformer_raw_jp_char_sp --config conf/train_asr_conformer.yaml --frontend_conf fs=16k --normalize=global_mvn --normalize_conf stats_file=exp/asr_stats_raw_jp_char_sp/train/feats_stats.npz --train_data_path_and_name_and_type dump/raw/train_nodev_sp/wav.scp,speech,sound --train_shape_file exp/asr_stats_raw_jp_char_sp/train/speech_shape --fold_length 150 --train_data_path_and_name_and_type dump/raw/train_nodev_sp/text,text,text --train_shape_file exp/asr_stats_raw_jp_char_sp/train/text_shape.char --valid_data_path_and_name_and_type dump/raw/dev_4k/text,text,text --valid_shape_file exp/asr_stats_raw_jp_char_sp/valid/text_shape.char
+2024-01-26 19:04:02,921 (launch:230) INFO: single-node with 4gpu on distributed mode
+2024-01-26 19:04:02,923 (launch:341) INFO: log file: exp/asr_train_asr_conformer_raw_jp_char_sp/train.log
+2024-01-26T20:16:03 (asr.sh:1481:main) Stage 12: Decoding: training_dir=exp/asr_train_asr_conformer_raw_jp_char_sp
+2024-01-26T20:16:03 (asr.sh:1509:main) Generate 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/run.sh'. You can resume the process from stage 12 using this script
+2024-01-26T20:16:03 (asr.sh:1574:main) Decoding started... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/org/dev_4k/logdir/asr_inference.*.log'
+2024-01-26T20:45:08 (asr.sh:1590:main) Calculating RTF & latency... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/org/dev_4k/logdir/calculate_rtf.log'
+2024-01-26T20:45:11 (asr.sh:1574:main) Decoding started... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/dev/logdir/asr_inference.*.log'
+2024-01-26T20:46:58 (asr.sh:1590:main) Calculating RTF & latency... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/dev/logdir/calculate_rtf.log'
+2024-01-26T20:47:00 (asr.sh:1574:main) Decoding started... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/tedx-jp-10k/logdir/asr_inference.*.log'
+2024-01-26T21:34:53 (asr.sh:1590:main) Calculating RTF & latency... log: 'exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/tedx-jp-10k/logdir/calculate_rtf.log'
+2024-01-26T21:34:58 (asr.sh:1622:main) Stage 13: Scoring
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+2024-01-26T21:35:01 (asr.sh:1712:main) Write cer result in exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/org/dev_4k/score_cer/result.txt
+|    SPKR                    |    # Snt         # Wrd     |    Corr           Sub           Del            Ins            Err          S.Err     |
+|    Sum/Avg                 |    4000          102614    |    15.8          36.0          48.1            2.7           86.8          100.0     |
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+2024-01-26T21:35:07 (asr.sh:1712:main) Write wer result in exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/org/dev_4k/score_wer/result.txt
+|    SPKR                    |     # Snt        # Wrd     |     Corr           Sub            Del           Ins            Err         S.Err     |
+|    Sum/Avg                 |     4000          4000     |      0.0         100.0            0.0           0.0          100.0         100.0     |
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+2024-01-26T21:35:09 (asr.sh:1712:main) Write cer result in exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/dev/score_cer/result.txt
+|    SPKR                  |    # Snt        # Wrd     |    Corr           Sub          Del           Ins           Err         S.Err     |
+|    Sum/Avg               |     119          2659     |    15.1          40.7         44.3           2.8          87.7         100.0     |
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+2024-01-26T21:35:11 (asr.sh:1712:main) Write wer result in exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/dev/score_wer/result.txt
+|    SPKR                  |    # Snt        # Wrd     |    Corr           Sub          Del           Ins           Err         S.Err     |
+|    Sum/Avg               |     119           119     |     0.0         100.0          0.0           0.0         100.0         100.0     |
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type char --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+2024-01-26T21:35:14 (asr.sh:1712:main) Write cer result in exp/asr_train_asr_conformer_raw_jp_char_sp/decode_asr_lm_lm_train_lm_jp_char_valid.loss.ave_asr_model_valid.acc.ave/tedx-jp-10k/score_cer/result.txt
+|     SPKR            |     # Snt          # Wrd     |     Corr             Sub            Del             Ins            Err           S.Err     |
+|     Sum/Avg         |    10000           191708    |     16.3            36.3           47.4             3.0           86.6           100.0     |
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --cleaner none --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true
+/home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/espnet/espnet2/bin/tokenize_text.py -f 2- --input - --output - --token_type word --non_linguistic_symbols none --remove_non_linguistic_symbols true --cleaner none
+Network_traverse: Error, too many traversals > 31
+2024-01-31T17:01:35 (asr.sh:283:main) ./asr.sh --ngpu 4 --nj 128 --inference_nj 256 --lang jp --token_type char --feats_type raw --asr_config conf/train_asr_conformer.yaml --inference_config conf/decode_asr.yaml --lm_config conf/train_lm.yaml --train_set train_nodev --valid_set dev_4k --test_sets dev_4k dev tedx-jp-10k --speed_perturb_factors 0.9 1.0 1.1 --lm_train_text data/train_nodev/text --ngpu 4
+2024-01-31T17:01:36 (asr.sh:321:main) Info: The valid_set 'dev_4k' is included in the test_sets. '--eval_valid_set true' is set and 'dev_4k' is removed from the test_sets
+2024-01-31T17:01:36 (asr.sh:565:main) Skipped stages:  9 14 15 16 
+2024-01-31T17:01:36 (asr.sh:572:main) Stage 1: Data preparation for data/train_nodev, data/dev_4k, etc.
+2024-01-31T17:01:36 (data.sh:16:main) local/data.sh 
+2024-01-31T17:01:36 (data.sh:42:main) stage 1: TEDxJP-10k found in /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/data/datasets/TEDxJP-10K_v1.1.
+local/tedx-jp-10k_data_prep.sh: Copying segments, spk2utt, text and utt2spk to data/tedx-jp-10k.
+local/tedx-jp-10k_data_prep.sh: Creating wav.scp from wavlist.txt
+fix_data_dir.sh: kept all 10000 utterances.
+fix_data_dir.sh: old files are kept in data/tedx-jp-10k/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/tedx-jp-10k
+local/tedx-jp-10k_data_prep.sh: Done preprocessing TEDxJP-10K dataset (data/tedx-jp-10k)
+removed tags, space, and <sp>
+local/laborotv_data_prep.sh: Making data/train ...
+fix_data_dir.sh: kept all 1601971 utterances.
+fix_data_dir.sh: old files are kept in data/train/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train
+local/laborotv_data_prep.sh: Making data/dev ...
+fix_data_dir.sh: kept all 12000 utterances.
+fix_data_dir.sh: old files are kept in data/dev/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/dev
+local/laborotv_data_prep.sh: done preparing data directories
+removed tags, space, and <sp>
+removed tags, space, and <sp>
+utils/subset_data_dir.sh: reducing #utt from 1601971 to 4000
+utils/subset_data_dir.sh: reducing #utt from 1601971 to 1597971
+2024-01-31T17:03:54 (data.sh:68:main) Successfully finished. [elapsed=138s]
+2024-01-31T17:03:54 (asr.sh:580:main) Stage 2: Speed perturbation: data/train_nodev -> data/train_nodev_sp
+text
+utt2lang
+text
+scripts/utils/perturb_data_dir_speed.sh: generated speed-perturbed version of data in data/train_nodev, in data/train_nodev_sp0.9
+fix_data_dir.sh: kept all 1597971 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp0.9/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train_nodev_sp0.9
+text
+utt2lang
+text
+scripts/utils/perturb_data_dir_speed.sh: generated speed-perturbed version of data in data/train_nodev, in data/train_nodev_sp1.1
+fix_data_dir.sh: kept all 1597971 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp1.1/.backup
+utils/validate_data_dir.sh: Successfully validated data-directory data/train_nodev_sp1.1
+utils/combine_data.sh --extra_files text  data/train_nodev_sp data/train_nodev_sp0.9 data/train_nodev data/train_nodev_sp1.1
+utils/combine_data.sh: combined utt2uniq
+utils/combine_data.sh [info]: not combining segments as it does not exist
+utils/combine_data.sh: combined utt2spk
+utils/combine_data.sh [info]: not combining utt2lang as it does not exist
+utils/combine_data.sh [info]: not combining utt2dur as it does not exist
+utils/combine_data.sh [info]: not combining utt2num_frames as it does not exist
+utils/combine_data.sh [info]: not combining reco2dur as it does not exist
+utils/combine_data.sh [info]: not combining feats.scp as it does not exist
+utils/combine_data.sh: combined text
+utils/combine_data.sh [info]: not combining cmvn.scp as it does not exist
+utils/combine_data.sh [info]: not combining vad.scp as it does not exist
+utils/combine_data.sh [info]: not combining reco2file_and_channel as it does not exist
+utils/combine_data.sh: combined wav.scp
+utils/combine_data.sh [info]: not combining spk2gender as it does not exist
+utils/combine_data.sh: combined text
+fix_data_dir.sh: kept all 4793913 utterances.
+fix_data_dir.sh: old files are kept in data/train_nodev_sp/.backup
+2024-01-31T17:09:32 (asr.sh:615:main) Stage 3: Format wav.scp: data/ -> dump/raw
+utils/copy_data_dir.sh: copied data from data/train_nodev_sp to dump/raw/org/train_nodev_sp
+utils/validate_data_dir.sh: Successfully validated data-directory dump/raw/org/train_nodev_sp
+2024-01-31T17:11:22 (format_wav_scp.sh:46:main) scripts/audio/format_wav_scp.sh --nj 128 --cmd run.pl --audio-format flac --fs 16k --multi-columns-input false --multi-columns-output false data/train_nodev_sp/wav.scp dump/raw/org/train_nodev_sp
+2024-01-31T17:11:23 (format_wav_scp.sh:118:main) [info]: without segments
+run.pl: 128 / 128 failed, log is in dump/raw/org/train_nodev_sp/logs/format_wav_scp.*.log
+# pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/org/train_nodev_sp/logs/wav.1.scp dump/raw/org/train_nodev_sp/data/format.1 
+# Started at Wed Jan 31 17:11:27 JST 2024
+#
+2024-01-31 17:11:28,382 (format_wav_scp:151) INFO: /home/ubuntu/pjt_laborotvspeech_increase/LaboroTVSpeechV2Evaluation/.venv/bin/python3 pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/org/train_nodev_sp/logs/wav.1.scp dump/raw/org/train_nodev_sp/data/format.1
+0it [00:00, ?it/s]
+0it [00:00, ?it/s][Asox WARN wav: Length in output .wav header will be wrong since can't seek to fix it
+sox WARN wav: Length in output .wav header will be wrong since can't seek to fix it
+2it [00:00, 15.05it/s]
+2it [00:00, 15.06it/s][Asox WARN wav: Length in output .wav header will be wrong since can't seek to fix it
+sox WARN wav: Length in output .wav header will be wrong since can't seek to fix it
+4it [00:00, 16.68it/s]
+4it [00:00, 16.67it/s][Asox WARN wav: Length i

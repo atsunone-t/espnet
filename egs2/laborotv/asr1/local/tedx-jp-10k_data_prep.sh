@@ -32,6 +32,17 @@ while read line; do
     filepath=${RAW_DATA_DIR}/wav/$(cut -d' ' -f 2 <<<${line})
     echo "${id} sox \"${filepath}\" -c 1 -r 16000 -t wav - |" >> ${dst_dir}/wav.scp
 done < ${RAW_DATA_DIR}/wavlist.txt
-utils/data/validate_data_dir.sh --no-feats ${dst_dir}
+# 大元
+#utils/data/validate_data_dir.sh --no-feats ${dst_dir}
+
+# ディレクトリ構成を踏まえた案
+utils/validate_data_dir.sh --no-feats ${dst_dir}
+
+# issue案。laborotv_data_prep.shとも同じ
+# https://github.com/espnet/espnet/issues/2698
+#utils/data/fix_data_dir.sh ${dst_dir}
+#utils/validate_data_dir.sh --no-feats ${dst_dir}
+
+#utils/data/fix_data_dir.sh ${dst_dir} # これで動いた。
 
 echo "$0: Done preprocessing TEDxJP-10K dataset (${dst_dir})"
